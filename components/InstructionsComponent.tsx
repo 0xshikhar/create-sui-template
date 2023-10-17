@@ -1,7 +1,16 @@
 import styles from "../styles/InstructionsComponent.module.css";
 import { useRouter } from "next/router";
+import { useSuiClientQuery } from '@mysten/dapp-kit';
+
 
 export default function InstructionsComponent() {
+	const { data, isLoading, error, refetch } = useSuiClientQuery('getOwnedObjects', {
+		owner: '0x123',
+	});
+
+	if (isLoading) {
+		return <div>Loading...</div>;
+	}
 	const router = useRouter();
 	return (
 		<div className="min-h-screen">
@@ -16,6 +25,9 @@ export default function InstructionsComponent() {
 						Get started by editing this page in{" "}
 						<span>/pages/index.tsx</span>
 					</p>
+					
+					<h1>{JSON.stringify(data, null, 2)}</h1>;
+
 				</header>
 			</div>
 		</div>
