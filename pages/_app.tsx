@@ -8,33 +8,38 @@ import { SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
 import { type SuiClientOptions } from '@mysten/sui.js/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import { WalletKitProvider } from '@mysten/wallet-kit';
+import { PropsWithChildren } from 'react';
+
+
 // Config options for the networks you want to connect to
-const networks = {
-  localnet: { url: getFullnodeUrl('localnet') },
-  mainnet: { url: getFullnodeUrl('mainnet') },
-} satisfies Record<string, SuiClientOptions>;
-const queryClient = new QueryClient();
+// const networks = {
+//   localnet: { url: getFullnodeUrl('localnet') },
+//   mainnet: { url: getFullnodeUrl('mainnet') },
+// } satisfies Record<string, SuiClientOptions>;
 
-export default function App({ Component, pageProps }: AppProps) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <SuiClientProvider networks={networks} defaultNetwork="localnet">
-        <WalletProvider>
-          <MainLayout>
-            <Component {...pageProps} />
-          </MainLayout>
-        </WalletProvider>
-      </SuiClientProvider>
-    </QueryClientProvider>
-  );
-}
+// const queryClient = new QueryClient();
 
-// export default function App({ Component, pageProps }: AppProps) {
-//   const router = useRouter()
-
+// export default function App({ Component, pageProps }: PropsWithChildren) {
 //   return (
-//     <MainLayout>
-//       <Component {...pageProps} />
-//     </MainLayout>
-//   )
+//     <WalletKitProvider>
+//       {/* <Component {...pageProps} /> */}
+//       <div>hello world</div>
+//     <WalletKitProvider />
+//   );
+// };
+
+// interface AppProps {
+//   Component: React.ComponentType;
+//   pageProps: Record<string, any>;
 // }
+
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  return (
+    <WalletKitProvider>
+      <Component {...pageProps} />
+    </WalletKitProvider>
+  );
+};
+
+export default App;
