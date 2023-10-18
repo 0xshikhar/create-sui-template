@@ -31,14 +31,16 @@ export default function InstructionsComponent() {
 					</h1>
 					<h3 className="text-[24px] p-4 mb-10 ">By <a href="https://x.com/0xShikhar">0xShikhar</a> </h3>
 
-					<p>
+					<ConnectButton />
+
+					<p className="p-10">
 						Get started by editing this page in{" "}
 						<span>/pages/index.tsx</span>
 					</p>
 
 					{/* <h1>{JSON.stringify(data, null, 2)}</h1>; */}
 
-					<ConnectButton />;
+					
 
 
 				</header>
@@ -52,7 +54,7 @@ export default function InstructionsComponent() {
 						(
 							"No current account"
 						)
-					},
+					}
 				</div>
 			</div>
 		</div>
