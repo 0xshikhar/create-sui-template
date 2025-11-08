@@ -1,5 +1,5 @@
+"use client";
 import styles from "../styles/InstructionsComponent.module.css";
-import { useRouter } from "next/router";
 // import { useSuiClientQuery, ConnectButton } from '@mysten/dapp-kit';
 
 import { useWalletKit } from '@mysten/wallet-kit';
@@ -14,13 +14,12 @@ export default function InstructionsComponent() {
 	// if (isLoading) {
 	// 	return <div>Loading...</div>;
 	// }
-	const router = useRouter();
+	// Using App Router pages, navigation can be handled by next/navigation where needed.
 
 	const { currentAccount, currentWallet } = useWalletKit();
 	console.log("current account", currentAccount)
 	console.log("current wallet", currentWallet)
 	
-
 
 	return (
 		<div className="min-h-screen">
