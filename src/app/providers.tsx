@@ -2,17 +2,30 @@
 
 import { ReactNode, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WalletKitProvider } from "@mysten/wallet-kit";
 import { ThemeProvider } from "next-themes";
+import { EnokiFlowProvider } from "@mysten/enoki/react";
+import { getFullnodeUrl } from "@mysten/sui/client";
+import { createNetworkConfig, SuiClientProvider } from "@mysten/dapp-kit";
+import { WalletKitProvider } from "@mysten/wallet-kit";
+
+const { networkConfig } = createNetworkConfig({
+  devnet: { url: getFullnodeUrl("devnet") },
+  testnet: { url: getFullnodeUrl("testnet") },
+  mainnet: { url: getFullnodeUrl("mainnet") },
+});
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <WalletKitProvider>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-      </WalletKitProvider>
+      <SuiClientProvider networks={networkConfig} defaultNetwork={"testnet"}>
+        <EnokiFlowProvider apiKey={process.env.NEXT_PUBLIC_ENOKI_API_KEY || ""}>
+          <WalletKitProvider>
+            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+          </WalletKitProvider>
+        </EnokiFlowProvider>
+      </SuiClientProvider>
     </ThemeProvider>
   );
 }
