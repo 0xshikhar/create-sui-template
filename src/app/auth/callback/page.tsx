@@ -36,6 +36,14 @@ function CallbackInner() {
       try {
         const data = await completeZkLogin(code, state as any);
         localStorage.setItem('zklogin_session', JSON.stringify(data));
+        
+        // Trigger storage event for same-window updates
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: 'zklogin_session',
+          newValue: JSON.stringify(data),
+          storageArea: localStorage
+        }));
+        
         setStatus('success');
         setTimeout(() => router.push('/'), 1200);
       } catch (e: any) {
