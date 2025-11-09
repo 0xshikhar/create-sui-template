@@ -2,9 +2,11 @@
 
 import { ConnectButton, useCurrentAccount } from "@mysten/dapp-kit";
 import { startZkLogin } from "@/lib/enoki";
+import { useZkLogin } from "@/hooks/useZkLogin";
 
 export default function HomePage() {
   const account = useCurrentAccount();
+  const { session, logout, isConnected } = useZkLogin();
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-gradient-to-b from-slate-950 via-slate-900 to-black text-white">
@@ -26,15 +28,52 @@ export default function HomePage() {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <ConnectButton />
-            <button
-              onClick={() => startZkLogin("google")}
-              className="rounded-md bg-blue-600 hover:bg-blue-500 px-4 py-2 text-sm font-medium"
-            >
-              Sign in with Google (zkLogin)
-            </button>
+            {!isConnected ? (
+              <button
+                onClick={() => startZkLogin("google")}
+                className="rounded-md bg-blue-600 hover:bg-blue-500 px-4 py-2 text-sm font-medium"
+              >
+                Sign in with Google (zkLogin)
+              </button>
+            ) : (
+              <button
+                onClick={logout}
+                className="rounded-md bg-red-600 hover:bg-red-500 px-4 py-2 text-sm font-medium"
+              >
+                Disconnect zkLogin
+              </button>
+            )}
           </div>
           {account && (
-            <div className="mt-3 text-sm text-white/70">Connected: {account.address}</div>
+            <div className="mt-3 text-sm text-white/70">
+              <span className="font-medium">Wallet:</span> {account.address}
+            </div>
+          )}
+          {isConnected && session && (
+            <div className="mt-3 p-4 rounded-lg border border-white/10 bg-white/5">
+              <div className="flex items-center gap-3 mb-2">
+                {session.userInfo?.picture && (
+                  <img 
+                    src={session.userInfo.picture} 
+                    alt={session.userInfo.name || 'User'} 
+                    className="w-10 h-10 rounded-full"
+                  />
+                )}
+                <div>
+                  <div className="text-sm font-medium">{session.userInfo?.name || 'zkLogin User'}</div>
+                  <div className="text-xs text-white/60">{session.userInfo?.email}</div>
+                </div>
+              </div>
+              <div className="text-xs text-white/70 mt-2">
+                <span className="font-medium">zkLogin Address:</span>
+                <div className="font-mono mt-1 break-all">{session.address}</div>
+              </div>
+              {session._devMode && (
+                <div className="mt-2 text-xs text-yellow-400">
+                  ⚠️ Development mode - Configure Enoki for production
+                </div>
+              )}
+            </div>
           )}
         </div>
         <div className="relative">
