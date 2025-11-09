@@ -1,24 +1,10 @@
 "use client";
 import styles from "../styles/InstructionsComponent.module.css";
-// import { useSuiClientQuery, ConnectButton } from '@mysten/dapp-kit';
-
-import { useWalletKit } from '@mysten/wallet-kit';
-import { ConnectButton } from '@mysten/wallet-kit';
+import { ConnectButton, useCurrentAccount } from '@mysten/dapp-kit';
 
 
 export default function InstructionsComponent() {
-	// const { data, isLoading, error, refetch } = useSuiClientQuery('getOwnedObjects', {
-	// 	owner: '0x123',
-	// });
-
-	// if (isLoading) {
-	// 	return <div>Loading...</div>;
-	// }
-	// Using App Router pages, navigation can be handled by next/navigation where needed.
-
-	const { currentAccount, currentWallet } = useWalletKit();
-	console.log("current account", currentAccount)
-	console.log("current wallet", currentWallet)
+	const account = useCurrentAccount();
 	
 
 	return (
@@ -44,16 +30,11 @@ export default function InstructionsComponent() {
 
 				</header>
 				<div>
-					{currentAccount ? (
-						<div>
-							{currentWallet ? ("Hi 👋, this is "+currentWallet.name) : ("No wallet connected")}
-						</div>
-					)
-						:
-						(
-							"No current account"
-						)
-					}
+					{account ? (
+						<div className="text-sm text-gray-300">Connected: {account.address}</div>
+					) : (
+						"No current account"
+					)}
 				</div>
 			</div>
 		</div>
