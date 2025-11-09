@@ -6,6 +6,8 @@ import React, { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
+import { ConnectButton } from "@mysten/wallet-kit";
+import { startZkLogin } from "@/lib/zklogin";
 
 const style = {
   wrapper: `bg-black w-screen px-[1.2rem] py-[0.8rem] flex `,
@@ -73,10 +75,16 @@ export default function NavbarApp() {
         >
           <CgProfile />
         </div>
-        <div className={style.headerIcon}>
-          <MdOutlineAccountBalanceWallet />
+        <div className="hidden md:block mr-2">
+          <ConnectButton />
         </div>
-        <div>{/* Wallet button placeholder */}</div>
+        <button
+          onClick={() => startZkLogin("google")}
+          className="ml-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 text-sm font-medium"
+          title="Sign in with Google via zkLogin"
+        >
+          zkLogin
+        </button>
       </div>
     </div>
   );
