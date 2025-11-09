@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { GOOGLE_CLIENT_ID, ZKLOGIN_REDIRECT_URI } from "@/lib/constants";
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 function getOrigin(req: Request) {
   const proto = (req.headers.get("x-forwarded-proto") || "http").split(",")[0];
   const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || "localhost:3000";

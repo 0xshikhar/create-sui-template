@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { EnokiClient } from "@mysten/enoki";
-import { GOOGLE_CLIENT_ID, ZKLOGIN_REDIRECT_URI, ENOKI_API_KEY } from "@/lib/constants";
+import { GOOGLE_CLIENT_ID, ZKLOGIN_REDIRECT_URI, ENOKI_API_KEY, ZKLOGIN_NETWORK } from "@/lib/constants";
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 function getOrigin(req: Request) {
   const proto = (req.headers.get("x-forwarded-proto") || "http").split(",")[0];
