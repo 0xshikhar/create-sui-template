@@ -1,5 +1,9 @@
 export async function startZkLogin(provider: string = "google") {
   try {
+    try {
+      localStorage.setItem('zklogin_provider', provider);
+    } catch {}
+    console.debug('[zklogin] starting login', { provider });
     const res = await fetch(`/api/auth/zklogin/url?provider=${encodeURIComponent(provider)}`);
     if (!res.ok) throw new Error(`Failed to get auth url (${res.status})`);
     const data = await res.json();

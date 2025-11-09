@@ -1,7 +1,7 @@
 "use client";
 
 import { ConnectButton, useCurrentAccount } from "@mysten/dapp-kit";
-import { startZkLogin } from "@/lib/zklogin";
+import { startZkLogin } from "@/lib/enoki";
 
 export default function HomePage() {
   const account = useCurrentAccount();

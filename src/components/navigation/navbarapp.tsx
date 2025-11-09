@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { ConnectButton } from "@mysten/dapp-kit";
-import { startZkLogin } from "@/lib/zklogin";
+import { startZkLogin } from "@/lib/enoki";
 
 const style = {
   wrapper: `bg-black w-screen px-[1.2rem] py-[0.8rem] flex `,
