@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
+import "@mysten/dapp-kit/dist/index.css";
 import { Providers } from "./providers";
 import Navbar from "@/components/navigation/navbarapp";
 
