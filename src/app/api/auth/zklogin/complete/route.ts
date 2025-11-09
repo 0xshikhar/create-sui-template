@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { EnokiClient } from "@mysten/enoki";
+import { GOOGLE_CLIENT_ID, ZKLOGIN_REDIRECT_URI, ENOKI_API_KEY } from "@/lib/constants";
 
 function getOrigin(req: Request) {
   const proto = (req.headers.get("x-forwarded-proto") || "http").split(",")[0];
