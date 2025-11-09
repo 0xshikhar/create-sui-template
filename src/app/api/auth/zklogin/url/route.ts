@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { GOOGLE_CLIENT_ID, ZKLOGIN_REDIRECT_URI } from "@/lib/constants";
 
 function getOrigin(req: Request) {
   const proto = (req.headers.get("x-forwarded-proto") || "http").split(",")[0];
@@ -12,16 +13,23 @@ export async function GET(req: Request) {
     const provider = (searchParams.get("provider") || "google").toLowerCase();
 
     const origin = getOrigin(req);
-    const redirectUri = process.env.ZKLOGIN_REDIRECT_URI || `${origin}/auth/callback`;
+    const redirectUri = ZKLOGIN_REDIRECT_URI || `${origin}/auth/callback`;
 
     if (provider !== "google") {
       return NextResponse.json({ error: "Unsupported provider" }, { status: 400 });
     }
 
-    const clientId = process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const clientId = GOOGLE_CLIENT_ID;
     if (!clientId) {
       return NextResponse.json({ error: "Missing GOOGLE_CLIENT_ID" }, { status: 500 });
     }
+
+    console.debug("[zklogin.url] Building OAuth URL", {
+      provider,
+      redirectUri,
+      hasClientId: !!clientId,
+      clientIdSuffix: clientId.slice(-6),
+    });
 
     const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
     authUrl.searchParams.set("client_id", clientId);
