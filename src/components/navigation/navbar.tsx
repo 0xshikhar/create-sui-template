@@ -31,8 +31,9 @@ export default function Navbar() {
 					{/* <Image src={mantleSeaLogo} height={80} width={200} alt="mantle logo" /> */}
 					<div className="text-[32px] text-white font-serif"
 					>
-						POLKA.3
+						SUI Template
 					</div>
+					<p className="text-[12px] text-[#8a939b]">by 0xShikhar</p>
 					<div className={style.logoText}></div>
 				</div>
 			</Link>

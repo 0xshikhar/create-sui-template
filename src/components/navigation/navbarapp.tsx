@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
-import { MdOutlineAccountBalanceWallet } from "react-icons/md";
-import { ConnectButton } from "@mysten/wallet-kit";
+import { ConnectButton } from "@mysten/dapp-kit";
 import { startZkLogin } from "@/lib/zklogin";
 
 const style = {
@@ -29,7 +28,7 @@ export default function NavbarApp() {
     <div className={style.wrapper}>
       <Link href="/">
         <div className={style.logoContainer}>
-          <div className="text-[32px] text-white font-serif">POLKA.3</div>
+          <div className="text-[32px] text-white font-serif">SuiTemplate</div>
           <div className={style.logoText}></div>
         </div>
       </Link>
