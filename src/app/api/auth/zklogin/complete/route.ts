@@ -30,6 +30,12 @@ export async function POST(req: Request) {
     }
 
     // Exchange code for tokens
+    console.debug("[zklogin.complete] Exchanging code for tokens", {
+      provider,
+      redirectUri,
+      hasClientId: !!clientId,
+      clientIdSuffix: clientId ? clientId.slice(-6) : undefined,
+    });
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -53,40 +59,59 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No id_token returned" }, { status: 500 });
     }
 
-    const enokiApiKey = process.env.NEXT_PUBLIC_ENOKI_API_KEY || process.env.ENOKI_API_KEY;
-    if (!enokiApiKey) {
+    // Require server-side Enoki API key
+    const enokiApiKey = ENOKI_API_KEY;
+    if (!enokiApiKey || enokiApiKey === (process.env.NEXT_PUBLIC_ENOKI_API_KEY || "")) {
+      console.error("[zklogin.complete] Missing ENOKI_API_KEY (server secret). Do not use NEXT_PUBLIC key here.");
       return NextResponse.json({ error: "Missing ENOKI API key" }, { status: 500 });
     }
 
-    // Prove with Enoki zkLogin
-    const proveRes = await fetch("https://api.enoki.mystenlabs.com/v1/zklogin/prove", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${enokiApiKey}`,
-      },
-      body: JSON.stringify({
-        jwt: tokenData.id_token,
-        network: process.env.ZKLOGIN_NETWORK || "testnet",
-      }),
+    // Debug: decode JWT payload (iss/aud)
+    const decodeJwtPayload = (jwt: string) => {
+      try {
+        const [, payload] = jwt.split(".");
+        const norm = payload.replace(/-/g, "+").replace(/_/g, "/");
+        const json = Buffer.from(norm, "base64").toString("utf8");
+        return JSON.parse(json);
+      } catch {
+        return null;
+      }
+    };
+    const jwtPayload = decodeJwtPayload(tokenData.id_token);
+    console.debug("[zklogin.complete] JWT payload summary", {
+      iss: jwtPayload?.iss,
+      aud: jwtPayload?.aud,
+      sub: jwtPayload?.sub ? `${String(jwtPayload.sub).slice(0, 6)}…` : undefined,
     });
-
-    if (!proveRes.ok) {
-      const t = await proveRes.text();
-      console.error("Enoki prove failed:", t);
-      return NextResponse.json({ error: "Enoki zkLogin failed" }, { status: proveRes.status });
+    if (jwtPayload?.aud && clientId && jwtPayload.aud !== clientId) {
+      console.warn("[zklogin.complete] Warning: JWT audience does not match GOOGLE_CLIENT_ID. Check Google client and Enoki app config.");
     }
 
-    const result = await proveRes.json();
+    // Use Enoki SDK to resolve zkLogin address/publicKey/salt from JWT
+    const enoki = new EnokiClient({ apiKey: enokiApiKey });
+    let zklogin;
+    try {
+      zklogin = await enoki.getZkLogin({ jwt: tokenData.id_token });
+    } catch (e: any) {
+      console.error("[zklogin.complete] Enoki getZkLogin failed", {
+        status: e?.status,
+        code: e?.code,
+        errors: e?.errors,
+      });
+      const status = typeof e?.status === "number" ? e.status : 502;
+      return NextResponse.json({ error: "Enoki zkLogin failed", details: { status: e?.status, code: e?.code, errors: e?.errors } }, { status });
+    }
 
     return NextResponse.json({
-      address: result.address,
-      zkProof: result.zkProof,
+      address: zklogin.address,
+      // zkProof is created later via nonce/zkp flow when sending transactions
+      zkProof: null,
       userInfo: {
-        sub: result.sub,
-        email: result.email,
-        name: result.name,
-        picture: result.picture,
+        // Basic claims from Google token (subset only; redacted)
+        sub: jwtPayload?.sub,
+        email: jwtPayload?.email,
+        name: jwtPayload?.name,
+        picture: jwtPayload?.picture,
       },
       provider: "google",
     });
