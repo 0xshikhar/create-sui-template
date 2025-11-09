@@ -1,16 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { completeZkLogin } from '@/lib/enoki';
 
-export default function AuthCallbackPage() {
+function CallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState<string | null>(null);
+  const hasRunRef = useRef(false);
 
   useEffect(() => {
     const run = async () => {
+      if (hasRunRef.current) return; // guard duplicate runs in Strict Mode
+      hasRunRef.current = true;
       const code = searchParams.get('code');
       const state = (searchParams.get('state') || 'google').toLowerCase();
       const errorParam = searchParams.get('error');
@@ -30,18 +34,7 @@ export default function AuthCallbackPage() {
       }
 
       try {
-        const res = await fetch('/api/auth/zklogin/complete', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code, provider: state }),
-        });
-
-        if (!res.ok) {
-          const t = await res.text();
-          throw new Error(`zkLogin failed (${res.status}): ${t}`);
-        }
-
-        const data = await res.json();
+        const data = await completeZkLogin(code, state as any);
         localStorage.setItem('zklogin_session', JSON.stringify(data));
         setStatus('success');
         setTimeout(() => router.push('/'), 1200);
@@ -78,5 +71,13 @@ export default function AuthCallbackPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><div className="text-center"><div className="animate-spin h-10 w-10 border-4 border-gray-200 border-t-blue-500 rounded-full mx-auto mb-4" /><div className="text-lg font-medium">Completing sign-in…</div></div></div>}>
+      <CallbackInner />
+    </Suspense>
   );
 }
