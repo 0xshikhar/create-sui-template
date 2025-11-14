@@ -1,38 +1,83 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Create Sui Template
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) and integrated with the [Sui](https://sui.io/) blockchain. It provides a comprehensive starting point for building decentralized applications (dApps) on Sui.
+
+## Features
+
+- **Next.js 14:** The latest version of the popular React framework for building server-rendered applications.
+- **Sui Integration:** Seamless integration with the Sui blockchain using the official `@mysten/dapp-kit` and `@mysten/sui` libraries.
+- **zkLogin:** Implementation of zkLogin for secure and private user authentication.
+- **WalletConnect:** Support for various wallets through `@mysten/wallet-kit`.
+- **UI Components:** A rich set of UI components from `shadcn/ui` and `lucide-react`.
+- **Theming:** Dark mode support with `next-themes`.
+- **Styling:** Styled with [Tailwind CSS](https://tailwindcss.com/) for a modern and responsive design.
+- **Linting and Formatting:** Pre-configured with ESLint and Prettier for code quality and consistency.
 
 ## Getting Started
 
-First, run the development server:
+To get a local copy up and running, follow these simple steps.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/) (v18 or later)
+- [Bun](https://bun.sh/) (or npm/yarn/pnpm)
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/0xshikhar/create-sui-template.git
+   ```
+2. Install NPM packages
+   ```sh
+   bun install
+   ```
+3. Create a `.env.local` file by copying the `.env.example` file and fill in the required environment variables.
+   ```sh
+   cp .env.example .env.local
+   ```
+
+### Running the Application
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+The following environment variables are required to run the application:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- `NEXT_PUBLIC_SUI_NETWORK`: The Sui network to connect to (e.g., `mainnet`, `testnet`, `devnet`).
+- `NEXT_PUBLIC_CLIENT_ID`: The client ID for your Google OAuth application (for zkLogin).
+- `NEXT_PUBLIC_REDIRECT_URI`: The redirect URI for your Google OAuth application.
+- `NEXT_PUBLIC_ENOKI_API_KEY`: Your API key for Enoki.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Available Scripts
 
-## Learn More
+In the project directory, you can run:
 
-To learn more about Next.js, take a look at the following resources:
+- `bun dev`: Runs the app in the development mode.
+- `bun build`: Builds the app for production to the `.next` folder.
+- `bun start`: Starts a Next.js production server.
+- `bun lint`: Runs ESLint to find and fix problems in your code.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
+## Deployment
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Learn More
+
+To learn more about the technologies used in this template, take a look at the following resources:
+
+- [Sui Documentation](https://docs.sui.io/) - learn about Sui features and API.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [React Documentation](https://react.dev/) - learn about React.
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - learn about Tailwind CSS.
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
